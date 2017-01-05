@@ -49,8 +49,9 @@ if __name__ == "__main__":
     key = '*********************'
     #今天日期
     today = datetime.datetime.now().strftime('%Y-%m-%d')
+    todayStr = today.split('-')
     #格式化今天日期
-    todayStr = datetime.datetime.strptime(today,'%Y-%M-%d')
+    d1 = datetime.datetime(int(todayStr[0]), int(todayStr[1]), int(todayStr[2]))
     with open('domain.txt') as file:
         for domain in file:
             host = domain.strip('\n')
@@ -71,10 +72,13 @@ if __name__ == "__main__":
             #到期日期
             expired = msgHost['data']['expiretime']
             #格式化到期日期
-            expiredStr = datetime.datetime.strptime(expired,'%Y-%M-%d')
+            #expiredStr = datetime.datetime.strptime(expired,'%Y-%M-%d')
+            #格式化到期日期
+            expiredStr = expired.split('-')
+            d2 = datetime.datetime(int(expiredStr[0]), int(expiredStr[1]), int(expiredStr[2]))
             #剩余时间
-            periodTime = (expiredStr - todayStr).days
-            if periodTime < 300:
+            periodTime = (d2 - d1).days
+            if periodTime < 60:
                 subject = '%s域名即将过期提醒邮件' %host
                 content = "%s域名还有%s天过期，请注意续费\n" %(host,periodTime)
                 sendmail(from_addr,password,to_addr,smtpServer,subject,content)
